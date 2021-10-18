@@ -7,15 +7,15 @@ const recordExpiryTime = Number(process.env.RECORD_EXPIRY_TIME);
 // is there a better way ?
 const executionArnBasePath = process.env.STATE_MACHINE_ARN?.replace(":stateMachine:", ":execution:");
 
+interface HttpHeaders {
+  [key: string]: string;
+}
 interface GetNameEvent {
   pathParameters: { executionId: string };
+  headers: HttpHeaders;
 }
 
-const headers = {
-  "Content-Type": "application/json",
-  "Access-Control-Allow-Origin": "https://dev.tradetrust.io",
-  "Access-Control-Allow-Credentials": true,
-};
+const ALLOWED_ORIGINS = ["https://*.tradetrust.io", "https://tradetrust.io"];
 
 const stepFunctions = new StepFunctions();
 
@@ -58,8 +58,18 @@ const retrieveExecutionDetailsFromExecutionId = (executionId: string) => async (
 export const getExecutionDetails = async (
   event: GetNameEvent
 ): Promise<{ statusCode: number; headers: { [key: string]: any }; body?: string }> => {
-  console.log(event);
   if (!event.pathParameters.executionId) throw new Error("Please provide an execution ARN");
+
+  const headers: HttpHeaders = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Credentials": "true",
+  };
+
+  const { origin } = event.headers;
+
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    headers["Access-Control-Allow-Origin"] = origin;
+  }
 
   try {
     // as the execution is asynchronous, we will retry multiple time until we get a result.

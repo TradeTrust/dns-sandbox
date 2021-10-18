@@ -35,7 +35,7 @@ functions:
       - http:
           path: /execution/{executionId}
           method: GET
-          cors: "https://dev.tradetrust.io"
+          cors: true
   create:
     description: "Create a DNS-TXT record."
     handler: index.create
@@ -51,7 +51,7 @@ stepFunctions:
         - http:
             path: /
             method: POST
-            cors: "https://dev.tradetrust.io"
+            cors: true
             response:
               headers:
                 Content-Type: "'application/json'"
