@@ -4,6 +4,11 @@ jspm_packages
 
 # Serverless directories
 .serverless
+.build
+.webpack
 
 /.idea
 *.iml
+
+# secrets
+.env

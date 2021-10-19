@@ -84,6 +84,8 @@ custom:
   RECORD_EXPIRY_TIME:
     stg: 3600
     prod: 86400
+    fyntech-stg: 3600
+    fyntech-prod: 2592000
     default: 3600
   DOMAIN: ${env:DOMAIN}
   HOSTED_ZONE_ID: ${env:HOSTED_ZONE_ID}

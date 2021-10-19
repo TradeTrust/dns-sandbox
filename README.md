@@ -9,3 +9,10 @@
 1. E2E_URL=<deployed_url> npm run test:watch
 
 > By default, this deployment will replace the `stg` environment.
+
+### Seconds to:
+
+- 3600 = 1 hour
+- 86400 = 1 day
+- 604800 = 7 days
+- 2592000 = 30 days
