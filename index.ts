@@ -54,7 +54,6 @@ const createRecord = ({
   };
 };
 
-//
 const isEthereumAddressEvent = (event: CreateEvent): event is DocumentStoreEvent =>
   !!event.address && !!event.networkId && isFinite(event.networkId);
 const createEthereumAddressRecord = ({ networkId, address }: DocumentStoreEvent): string =>
