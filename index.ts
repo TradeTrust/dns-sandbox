@@ -76,6 +76,8 @@ export const create = (event: CreateEvent, context: Context, callback: Callback<
   const name = uniqueNamesGenerator({ dictionaries: [adjectives, colors, animals], separator: "-" });
 
   route53.changeResourceRecordSets(createRecord({ action: "CREATE", value, name }), (err) => {
+    console.log("generated domain name:", name);
+    console.log("event inside changeResourceRecordSets", event);
     callback(err, { name, ...event });
   });
 };

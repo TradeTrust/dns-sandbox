@@ -16,3 +16,11 @@
 - 86400 = 1 day
 - 604800 = 7 days
 - 2592000 = 30 days
+
+### Debugging locally
+
+Be sure to have the appropriate variables in your `.env`. Refer to seed.run for those.
+
+- run `sls step-functions-offline --stateMachine=records --event=local-event.json`
+
+`records` is the variable name defined under `stateMachines` in serverless.yml. `local-event.json` is a mock event. Running the above command will add a txt record to aws route53, wait, then clean the txt record.
