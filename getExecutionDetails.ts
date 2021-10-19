@@ -63,6 +63,7 @@ export const getExecutionDetails = async (
   const headers: HttpHeaders = {
     "Content-Type": "application/json",
     "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Origin": ALLOWED_ORIGINS[0],
   };
 
   const { origin } = event.headers;
