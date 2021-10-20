@@ -54,6 +54,10 @@ stepFunctions:
         - http:
             path: /
             method: POST
+                 cors:
+            origins:
+              - https://*.tradetrust.io
+              - https://tradetrust.io
             response:
               headers:
                 Content-Type: "'application/json'"
