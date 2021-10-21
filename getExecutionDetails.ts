@@ -6,16 +6,9 @@ const recordExpiryTime = Number(process.env.RECORD_EXPIRY_TIME);
 // reuse the state machine arn and replace stateMachine by execution
 // is there a better way ?
 const executionArnBasePath = process.env.STATE_MACHINE_ARN?.replace(":stateMachine:", ":execution:");
-
 interface GetNameEvent {
   pathParameters: { executionId: string };
 }
-
-const headers = {
-  "Content-Type": "application/json",
-  "Access-Control-Allow-Origin": "https://dev.tradetrust.io",
-  "Access-Control-Allow-Credentials": true,
-};
 
 const stepFunctions = new StepFunctions();
 
@@ -58,7 +51,6 @@ const retrieveExecutionDetailsFromExecutionId = (executionId: string) => async (
 export const getExecutionDetails = async (
   event: GetNameEvent
 ): Promise<{ statusCode: number; headers: { [key: string]: any }; body?: string }> => {
-  console.log(event);
   if (!event.pathParameters.executionId) throw new Error("Please provide an execution ARN");
 
   try {
@@ -69,13 +61,19 @@ export const getExecutionDetails = async (
     );
     return {
       statusCode: 200,
-      headers,
+      headers: {
+        "Access-Control-Allow-Credentials": "true",
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ name: `${name}.${domain}`, expiryDate }),
     };
   } catch (e) {
     return {
       statusCode: 404,
-      headers,
+      headers: {
+        "Access-Control-Allow-Credentials": "true",
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({}),
     };
   }
