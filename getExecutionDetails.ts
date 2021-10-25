@@ -3,11 +3,15 @@ import { retry } from "./retry";
 
 const domain = process.env.DOMAIN;
 const recordExpiryTime = Number(process.env.RECORD_EXPIRY_TIME);
+
+const ALLOWED_ORIGINS = ["https://dev.tradetrust.io/", "https://rinkeby.tradetrust.io/", "https://www.tradetrust.io/"];
+
 // reuse the state machine arn and replace stateMachine by execution
 // is there a better way ?
 const executionArnBasePath = process.env.STATE_MACHINE_ARN?.replace(":stateMachine:", ":execution:");
 interface GetNameEvent {
   pathParameters: { executionId: string };
+  headers: { [key: string]: any };
 }
 
 const stepFunctions = new StepFunctions();
@@ -53,6 +57,16 @@ export const getExecutionDetails = async (
 ): Promise<{ statusCode: number; headers: { [key: string]: any }; body?: string }> => {
   if (!event.pathParameters.executionId) throw new Error("Please provide an execution ARN");
 
+  let headers = {
+    "Access-Control-Allow-Credentials": "true",
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  };
+
+  if (ALLOWED_ORIGINS.includes(event.headers.origin)) {
+    headers["Access-Control-Allow-Origin"] = event.headers.origin;
+  }
+
   try {
     // as the execution is asynchronous, we will retry multiple time until we get a result.
     const { name, expiryDate } = await retry(
@@ -61,19 +75,13 @@ export const getExecutionDetails = async (
     );
     return {
       statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Credentials": "true",
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify({ name: `${name}.${domain}`, expiryDate }),
     };
   } catch (e) {
     return {
       statusCode: 404,
-      headers: {
-        "Access-Control-Allow-Credentials": "true",
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify({}),
     };
   }
