@@ -39,7 +39,16 @@ functions:
       - http:
           path: /execution/{executionId}
           method: GET
-          cors: true
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
   create:
     description: "Create a DNS-TXT record."
     handler: index.create
@@ -55,7 +64,16 @@ stepFunctions:
         - http:
             path: /
             method: POST
-            cors: true
+            cors:
+              origin: "*"
+              headers:
+                - Content-Type
+                - X-Amz-Date
+                - Authorization
+                - X-Api-Key
+                - X-Amz-Security-Token
+                - X-Amz-User-Agent
+              allowCredentials: false
             response:
               headers:
                 Content-Type: "'application/json'"

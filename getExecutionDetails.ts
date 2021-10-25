@@ -62,14 +62,18 @@ export const getExecutionDetails = async (
 ): Promise<{ statusCode: number; headers: { [key: string]: any }; body?: string }> => {
   if (!event.pathParameters.executionId) throw new Error("Please provide an execution ARN");
 
-  let headers = {
-    "Access-Control-Allow-Credentials": "true",
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-  };
+  const origin = event.headers.origin;
+  let headers;
 
-  if (ALLOWED_ORIGINS.includes(event.headers.origin)) {
-    headers["Access-Control-Allow-Origin"] = event.headers.origin;
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    headers = {
+      "Access-Control-Allow-Origin": origin,
+      "Access-Control-Allow-Credentials": true,
+    };
+  } else {
+    headers = {
+      "Access-Control-Allow-Origin": "*",
+    };
   }
 
   try {
