@@ -4,7 +4,12 @@ import { retry } from "./retry";
 const domain = process.env.DOMAIN;
 const recordExpiryTime = Number(process.env.RECORD_EXPIRY_TIME);
 
-const ALLOWED_ORIGINS = ["https://dev.tradetrust.io/", "https://rinkeby.tradetrust.io/", "https://www.tradetrust.io/"];
+const ALLOWED_ORIGINS = [
+  "https://dev.tradetrust.io",
+  "https://rinkeby.tradetrust.io",
+  "https://www.tradetrust.io",
+  "https://tradetrust.io",
+];
 
 // reuse the state machine arn and replace stateMachine by execution
 // is there a better way ?
