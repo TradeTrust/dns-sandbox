@@ -63,7 +63,7 @@ export const getExecutionDetails = async (
 ): Promise<{ statusCode: number; headers: { [key: string]: any }; body?: string }> => {
   if (!event.pathParameters.executionId) throw new Error("Please provide an execution ARN");
 
-  const origin = event.headers.origin;
+  const origin = event.headers.Origin; // take note of "origin" letter casing
   const headers = new Headers();
 
   if (ALLOWED_ORIGINS.includes(origin)) {
