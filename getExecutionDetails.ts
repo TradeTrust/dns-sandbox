@@ -1,4 +1,5 @@
 import { StepFunctions } from "aws-sdk";
+import { Headers } from "node-fetch";
 import { retry } from "./retry";
 
 const domain = process.env.DOMAIN;
@@ -63,17 +64,11 @@ export const getExecutionDetails = async (
   if (!event.pathParameters.executionId) throw new Error("Please provide an execution ARN");
 
   const origin = event.headers.origin;
-  let headers;
+  const headers = new Headers();
 
   if (ALLOWED_ORIGINS.includes(origin)) {
-    headers = {
-      "Access-Control-Allow-Origin": origin,
-      "Access-Control-Allow-Credentials": true,
-    };
-  } else {
-    headers = {
-      "Access-Control-Allow-Origin": "*",
-    };
+    headers.append("Access-Control-Allow-Origin", origin);
+    headers.append("Access-Control-Allow-Credentials", "true");
   }
 
   try {
