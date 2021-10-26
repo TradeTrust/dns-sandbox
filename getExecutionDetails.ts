@@ -63,19 +63,27 @@ export const getExecutionDetails = async (
 ): Promise<{ statusCode: number; headers: { [key: string]: any }; body?: string }> => {
   if (!event.pathParameters.executionId) throw new Error("Please provide an execution ARN");
 
-  const origin = event.headers.Origin; // take note of "origin" letter casing
-  const headers = new Headers();
+  console.log("event headers:", event.headers);
+
+  const origin = event.headers["Origin"];
+  const headers = new Headers({
+    "Content-Type": "application/json",
+  });
+
+  console.log("before allowed origin check headers:", headers);
 
   if (ALLOWED_ORIGINS.includes(origin)) {
     headers.append("Access-Control-Allow-Origin", origin);
     headers.append("Access-Control-Allow-Credentials", "true");
   }
 
+  console.log("after allowed origin check headers:", headers);
+
   try {
     // as the execution is asynchronous, we will retry multiple time until we get a result.
     const { name, expiryDate } = await retry(
       retrieveExecutionDetailsFromExecutionId(event.pathParameters.executionId),
-      { times: 10 }
+      { times: process.env.IS_OFFLINE ? 1 : 10 }
     );
     return {
       statusCode: 200,

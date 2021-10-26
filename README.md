@@ -19,8 +19,12 @@
 
 ### Debugging locally
 
-Be sure to have the appropriate variables in your `.env`. Refer to seed.run for those.
+Be sure to have the appropriate variables in your `.env`. Refer to seed.run for those. For STATE_MACHINE_ARN, refer to aws step functions > state machines.
 
 - run `sls step-functions-offline --stateMachine=records --event=local-event.json`
 
 `records` is the variable name defined under `stateMachines` in serverless.yml. `local-event.json` is a mock event. Running the above command will add a txt record to aws route53, wait, then clean the txt record.
+
+- run `npm run dev`
+
+^ this should allow you to debug `getExecutionDetails` function

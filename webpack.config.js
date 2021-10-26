@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
+const Dotenv = require("dotenv-webpack");
 const slsw = require("serverless-webpack");
 
 module.exports = {
@@ -25,4 +26,5 @@ module.exports = {
       },
     ],
   },
+  plugins: [new Dotenv()], // to process offline env variables properly
 };

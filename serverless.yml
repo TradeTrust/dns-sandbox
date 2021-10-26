@@ -120,9 +120,12 @@ custom:
       Type: Wait
       Seconds: ${self:custom.RECORD_EXPIRY_TIME.${self:provider.stage}, self:custom.RECORD_EXPIRY_TIME.default}
     DeleteRecord: clean
+  serverless-offline:
+    noPrependStageInUrl: true
 
 plugins:
   - serverless-step-functions
   - serverless-webpack
   - serverless-dotenv-plugin
   - serverless-step-functions-offline
+  - serverless-offline
