@@ -75,6 +75,8 @@ export const getExecutionDetails = async (
   if (ALLOWED_ORIGINS.includes(origin)) {
     headers.append("Access-Control-Allow-Origin", origin);
     headers.append("Access-Control-Allow-Credentials", "true");
+  } else {
+    headers.append("Access-Control-Allow-Credentials", "false");
   }
 
   console.log("after allowed origin check headers:", headers);
