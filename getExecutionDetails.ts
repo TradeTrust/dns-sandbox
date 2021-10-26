@@ -1,5 +1,4 @@
 import { StepFunctions } from "aws-sdk";
-import { Headers } from "node-fetch";
 import { retry } from "./retry";
 
 const domain = process.env.DOMAIN;
@@ -66,17 +65,20 @@ export const getExecutionDetails = async (
   console.log("event headers:", event.headers);
 
   const origin = event.headers.origin || event.headers.Origin;
-  const headers = new Headers({
-    "Content-Type": "application/json",
-  });
+  let headers;
 
   console.log("before allowed origin check headers:", headers);
 
   if (ALLOWED_ORIGINS.includes(origin)) {
-    headers.append("Access-Control-Allow-Origin", origin);
-    headers.append("Access-Control-Allow-Credentials", "true");
+    headers = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": origin,
+      "Access-Control-Allow-Credentials": true,
+    };
   } else {
-    headers.append("Access-Control-Allow-Credentials", "false");
+    headers = {
+      "Access-Control-Allow-Credentials": false,
+    };
   }
 
   console.log("after allowed origin check headers:", headers);
