@@ -65,7 +65,7 @@ export const getExecutionDetails = async (
 
   console.log("event headers:", event.headers);
 
-  const origin = event.headers["Origin"];
+  const origin = event.headers.origin || event.headers.Origin;
   const headers = new Headers({
     "Content-Type": "application/json",
   });
