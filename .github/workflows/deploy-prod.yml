@@ -5,11 +5,6 @@ concurrency:
 
 on:
   workflow_dispatch:
-    inputs:
-      ref:
-        description: reference to a commit to deploy
-        required: true
-        default: master
 env:
   AWS_REGION: ap-southeast-1
   DOMAIN: sandbox.fyntech.io
