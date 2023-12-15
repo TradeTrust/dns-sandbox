@@ -16,9 +16,16 @@ provider:
   tracing:
     lambda: true
     apiGateway: true
-  # https://github.com/serverless/serverless/issues/6906
-  #  logs:
-  #    restApi: true
+  logs:
+    restApi:
+      accessLogging: true
+      executionLogging: true
+      format: '{"id":"$context.requestId","extendedId":"$context.extendedRequestId","path":"$context.path","method":"$context.httpMethod","time":"$context.requestTime","source":"$context.identity.sourceIp","resourcePath":"$context.resourcePath","error":{"message":"$context.error.message","type":"$context.error.responseType","validation":"$context.error.validationErrorString"},"waf":{"response":"$context.wafResponseCode","error":"$context.waf.error","status":"$context.waf.status"},"response":{"latency":"$context.responseLatency","length":"$context.responseLength","status":"$context.status"},"apikey":"$context.identity.apiKeyId","xray":"$context.xrayTraceId"}'
+      level: INFO
+      # ALWAYS PUT TO FALSE, NEVER LOG RESPONSE DATA BECAUSE IT CAN BE SENSITIVE MOP DATA
+      fullExecutionData: false
+      roleManagedExternally: true
+      role: ${self:custom.API_GATEWAY_LOGGING_ROLE_ARN}
   iamRoleStatements:
     - Effect: Allow
       Action: ["route53:ChangeResourceRecordSets"]
@@ -101,6 +108,7 @@ custom:
     default: 3600
   DOMAIN: ${env:DOMAIN}
   HOSTED_ZONE_ID: ${env:HOSTED_ZONE_ID}
+  API_GATEWAY_LOGGING_ROLE_ARN: ${env:API_GATEWAY_LOGGING_ROLE_ARN}
   webpack:
     excludeFiles: "*.test.ts"
   stepFunctionsOffline:
