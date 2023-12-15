@@ -111,6 +111,9 @@ custom:
     DeleteRecord: clean
   serverless-offline:
     noPrependStageInUrl: true
+  associateWaf:
+    name: ${env:WAF_NAME}
+    version: V2
 
 plugins:
   - serverless-step-functions
@@ -118,3 +121,4 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-step-functions-offline
   - serverless-offline
+  - serverless-associate-waf

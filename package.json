@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "aws-sdk": "^2.703.0",
+    "serverless-associate-waf": "^1.2.1",
     "typescript": "^3.9.5",
     "unique-names-generator": "^4.2.0"
   },
