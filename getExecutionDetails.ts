@@ -57,17 +57,39 @@ const retrieveExecutionDetailsFromExecutionId = (executionId: string) => async (
   throw new Error("Unable to find the event");
 };
 
+const getCircularReplacer = () => {
+  const ancestors: any[] = [];
+  return function (key: string, value: any) {
+    if (typeof value !== "object" || value === null) {
+      return value;
+    }
+    // `this` is the object that value is contained in,
+    // i.e., its direct parent.
+    while (ancestors.length > 0 && ancestors.slice(-1)[0] !== this) {
+      ancestors.pop();
+    }
+    if (ancestors.includes(value)) {
+      return "[Circular]";
+    }
+    ancestors.push(value);
+    return value;
+  };
+};
+
+const stringify = (headers: { [key: string]: any }) => {
+  return encodeURI(JSON.stringify(headers, getCircularReplacer()));
+}
+
+
 export const getExecutionDetails = async (
   event: GetNameEvent
 ): Promise<{ statusCode: number; headers: { [key: string]: any }; body?: string }> => {
   if (!event.pathParameters.executionId) throw new Error("Please provide an execution ARN");
 
-  console.log("event headers:", event.headers);
+  console.log("event headers:", stringify(event.headers));
 
   const origin = event.headers.origin || event.headers.Origin;
   let headers;
-
-  console.log("before allowed origin check headers:", headers);
 
   if (ALLOWED_ORIGINS.includes(origin)) {
     headers = {
@@ -81,7 +103,7 @@ export const getExecutionDetails = async (
     };
   }
 
-  console.log("after allowed origin check headers:", headers);
+  console.log("after allowed origin check headers:", stringify(headers));
 
   try {
     // as the execution is asynchronous, we will retry multiple time until we get a result.
