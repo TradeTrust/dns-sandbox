@@ -3,13 +3,14 @@ useDotenv: true
 variablesResolutionMode: 20210326
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs18.x
   stage: "${opt:stage, 'offline'}"
   region: "${opt:region, 'ap-southeast-1'}"
   memorySize: 256
   deploymentBucket:
     name: "${env:DEPLOYMENT_BUCKET}"
   environment:
+    STAGE: ${self:provider.stage}
     DOMAIN: ${self:custom.DOMAIN}
     HOSTED_ZONE_ID: ${self:custom.HOSTED_ZONE_ID}
     RECORD_EXPIRY_TIME: ${self:custom.RECORD_EXPIRY_TIME.${self:provider.stage}, self:custom.RECORD_EXPIRY_TIME.default}
@@ -24,26 +25,62 @@ provider:
       level: INFO
       # ALWAYS PUT TO FALSE, NEVER LOG RESPONSE DATA BECAUSE IT CAN BE SENSITIVE MOP DATA
       fullExecutionData: false
-      roleManagedExternally: true
-      role: ${self:custom.API_GATEWAY_LOGGING_ROLE_ARN}
   iamRoleStatements:
     - Effect: Allow
       Action: ["route53:ChangeResourceRecordSets"]
       Resource:
-        - "Fn::Join":
-            [
-              "",
-              [
-                "arn:aws:route53:::hostedzone/",
-                "${self:custom.HOSTED_ZONE_ID}",
-              ],
-            ]
+        - "Fn::Join": ["", ["arn:aws:route53:::hostedzone/", "${self:custom.HOSTED_ZONE_ID}"]]
     - Effect: Allow
       Action: ["states:GetExecutionHistory"]
       Resource:
         - "Fn::Join": ["", ["arn:aws:states:*:*:execution:DomainStateMachine*"]]
+    - Effect: Allow
+      Action: ["dynamodb:PutItem", "dynamodb:GetItem"]
+      Resource:
+        - { "Fn::GetAtt": ["DidWebTable", "Arn"] }
+  apiGateway:
+    usagePlan:
+      # quota:
+      #   limit: 100
+      #   period: MONTH
+      throttle:
+        burstLimit: 10
+        rateLimit: 10
+
+resources:
+  Resources:
+    DidWebTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: "didweb-${self:provider.stage}"
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+        TimeToLiveSpecification:
+          AttributeName: "ttl"
+          Enabled: true
+        BillingMode: "PAY_PER_REQUEST"
 
 functions:
+  getDidWeb:
+    description: "Get a did:web record."
+    handler: index.getDidWeb
+    events:
+      - http:
+          path: /.well-known/did.json
+          method: GET
+          cors: true
+  postDidWeb:
+    description: "Create a did:web record."
+    handler: index.postDidWeb
+    events:
+      - http:
+          path: /didweb
+          method: POST
+          cors: true
   getExecutionDetails:
     description: "Get the execution details of a step machine. Details include domain name created and expiry time"
     handler: index.getExecutionDetails
@@ -96,6 +133,8 @@ stepFunctions:
             Resource:
               Fn::GetAtt: [clean, Arn]
             End: true
+build:
+  esbuild: false
 custom:
   # https://github.com/serverless/serverless/issues/5534
   # change to seven days later 604800
@@ -126,7 +165,6 @@ custom:
 plugins:
   - serverless-step-functions
   - serverless-webpack
-  - serverless-dotenv-plugin
   - serverless-step-functions-offline
   - serverless-offline
   - serverless-associate-waf

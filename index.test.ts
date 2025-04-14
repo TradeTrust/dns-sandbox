@@ -1,4 +1,4 @@
-import { getDocumentStoreRecords, getDnsDidRecords } from "@govtechsg/dnsprove";
+import { getDocumentStoreRecords, getDnsDidRecords } from "@tradetrust-tt/dnsprove";
 import fetch from "node-fetch";
 import { retry } from "./retry";
 
