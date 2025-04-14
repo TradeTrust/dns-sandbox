@@ -1,8 +1,7 @@
-// only use the type :)
-// eslint-disable-next-line import/no-unresolved
-import { Context, Callback } from "aws-lambda";
-import { Route53 } from "aws-sdk";
-import { uniqueNamesGenerator, adjectives, colors, animals } from "unique-names-generator";
+import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { ChangeAction, ChangeResourceRecordSetsRequest, Route53 } from "@aws-sdk/client-route-53";
+import { Callback, Context } from "aws-lambda";
+import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 
 const domain = process.env.DOMAIN;
 const hostedZoneId = process.env.HOSTED_ZONE_ID || "";
@@ -28,10 +27,10 @@ const createRecord = ({
   name,
   value,
 }: {
+  action: ChangeAction;
   name: string;
-  action: string;
   value: string;
-}): Route53.Types.ChangeResourceRecordSetsRequest => {
+}): ChangeResourceRecordSetsRequest => {
   return {
     ChangeBatch: {
       Changes: [
@@ -98,3 +97,5 @@ export const clean = (event: CleanEvent, context: Context, callback: Callback<Cl
 };
 
 export { getExecutionDetails } from "./getExecutionDetails";
+export { postDidWeb } from "./postDidWeb";
+export { getDidWeb } from "./getDidWeb";
