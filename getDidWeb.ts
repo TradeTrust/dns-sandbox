@@ -18,7 +18,7 @@ export const getDidWeb = async (event: APIGatewayEvent) => {
 
   const {
     wellKnownDid: { S: wellKnownDid },
-  } = result.Item ?? {};
+  } = result.Item ?? { wellKnownDid: { S: undefined } };
 
   if (!wellKnownDid) {
     return {
