@@ -6,7 +6,7 @@ import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-
 export const postDidWeb = async (event: unknown, context: Context) => {
   try {
     const name = uniqueNamesGenerator({ dictionaries: [adjectives, colors, animals], separator: "-" });
-    const domain = `${name}.did-web.${process.env.DOMAIN}`;
+    const domain = `${name}.${process.env.DOMAIN}`;
 
     const client = new DynamoDBClient({
       region: "ap-southeast-1",
@@ -39,6 +39,7 @@ export const postDidWeb = async (event: unknown, context: Context) => {
       statusCode: 200,
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         requestId: context.awsRequestId,
@@ -53,6 +54,7 @@ export const postDidWeb = async (event: unknown, context: Context) => {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         requestId: context.awsRequestId,

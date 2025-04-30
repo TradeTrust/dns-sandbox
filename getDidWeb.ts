@@ -25,6 +25,7 @@ export const getDidWeb = async (event: APIGatewayEvent) => {
       statusCode: 404,
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
     };
   }
@@ -33,6 +34,7 @@ export const getDidWeb = async (event: APIGatewayEvent) => {
     statusCode: 200,
     headers: {
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
     },
     body: wellKnownDid,
   };
