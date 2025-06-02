@@ -12,6 +12,7 @@ provider:
   environment:
     STAGE: ${self:provider.stage}
     DOMAIN: ${self:custom.DOMAIN}
+    DID_DOMAIN: ${self:custom.DID_DOMAIN}
     HOSTED_ZONE_ID: ${self:custom.HOSTED_ZONE_ID}
     RECORD_EXPIRY_TIME: ${self:custom.RECORD_EXPIRY_TIME.${self:provider.stage}, self:custom.RECORD_EXPIRY_TIME.default}
   tracing:
@@ -146,6 +147,7 @@ custom:
     fyntech-prod: 2592000
     default: 3600
   DOMAIN: ${env:DOMAIN}
+  DID_DOMAIN: ${env:DID_DOMAIN}
   HOSTED_ZONE_ID: ${env:HOSTED_ZONE_ID}
   API_GATEWAY_LOGGING_ROLE_ARN: ${env:API_GATEWAY_LOGGING_ROLE_ARN}
   webpack:

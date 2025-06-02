@@ -6,7 +6,7 @@ import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-
 export const postDidWeb = async (event: unknown, context: Context) => {
   try {
     const name = uniqueNamesGenerator({ dictionaries: [adjectives, colors, animals], separator: "-" });
-    const domain = `${name}.${process.env.DOMAIN}`;
+    const domain = `${name}.${process.env.DID_DOMAIN}`;
 
     const client = new DynamoDBClient({
       region: "ap-southeast-1",
