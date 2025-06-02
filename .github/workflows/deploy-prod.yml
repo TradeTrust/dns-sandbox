@@ -8,6 +8,7 @@ on:
 env:
   AWS_REGION: ap-southeast-1
   DOMAIN: sandbox.fyntech.io
+  DID_DOMAIN: playground.fyntech.io
   HOSTED_ZONE_ID: ${{ secrets.HOSTED_ZONE_ID }}
   DEPLOYMENT_BUCKET: tradetrust-prod-serverless-deployment-49690046e4	
   WAF_NAME: tradetrust-prod
