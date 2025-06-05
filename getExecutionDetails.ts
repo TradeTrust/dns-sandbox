@@ -83,8 +83,6 @@ export const getExecutionDetails = async (
 ): Promise<{ statusCode: number; headers: { [key: string]: any }; body?: string }> => {
   if (!event.pathParameters.executionId) throw new Error("Please provide an execution ARN");
 
-  console.log("event headers:", stringify(event.headers));
-
   const origin = event.headers.origin || event.headers.Origin;
   let headers;
 
@@ -99,8 +97,6 @@ export const getExecutionDetails = async (
       "Access-Control-Allow-Credentials": false,
     };
   }
-
-  console.log("after allowed origin check headers:", stringify(headers));
 
   try {
     // as the execution is asynchronous, we will retry multiple time until we get a result.
