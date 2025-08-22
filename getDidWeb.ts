@@ -1,7 +1,6 @@
 import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
-import { APIGatewayEvent } from "aws-lambda";
 
-export const getDidWeb = async (event: APIGatewayEvent) => {
+export const getDidWeb = async (event: AWSLambda.APIGatewayEvent) => {
   if (!event.requestContext.domainName) throw new Error("Please provide a domain name");
   const client = new DynamoDBClient({
     region: "ap-southeast-1",
