@@ -34,6 +34,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
+          check-latest: true
       - run: npm ci
       - name: serverless deploy
         run: npx sls deploy --conceal --stage prod
