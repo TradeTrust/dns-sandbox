@@ -3,7 +3,7 @@ useDotenv: true
 variablesResolutionMode: 20210326
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs22.x
   stage: "${opt:stage, 'offline'}"
   timeout: 29
   region: "${opt:region, 'ap-southeast-1'}"
